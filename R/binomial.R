@@ -1,3 +1,5 @@
+library(devtools)
+
 # 1.1 Private Checker Functions... 
 
 # private auxillary function to test if an input prob is a valid probability value
@@ -21,13 +23,12 @@ check_trials <- function(trials){
 }
 
 # private auxillary function to test if an input success is a valid value for number of successes
-check_success <- function(success, trials) {
-  for (i in success) {
+check_success <- function(success, trials)
+  for (i in success) 
     if (i < trials || i > 0) {
       return(TRUE)
     }
-  }
-  else
+  else{
     stop("invalid success value")
 }
 
@@ -81,4 +82,40 @@ bin_choose <- function(n,k) {
 stop("k cannot be greater than n")
 }
 
-#1.4 Function bin_probability 
+#1.4 Function bin_probability
+#' @title  bin_probability()
+#' @description calculates the probability of k successes in n trials, given the probability of success 
+#' @param n the number of trials
+#' @param k the number of successes
+#' @argument check_trials()
+#' @argument check_prob()
+#' @argument check_success()
+#' @return the number of combinations
+#' @export
+
+bin_probability <- function(trials, prob, success){
+    if (check_trials(trials) == FALSE) {
+      stop("invalid trials value")
+    }
+    else if (check_prob(prob) == FALSE) {
+      stop("invalid probability value")
+    }
+    else if (check_success(success, trials) == FALSE) {
+      stop("invalid success value")
+    }
+    else {
+      probability <- bin_choose (trials, success) * (prob ^ success) * (1 - prob) ^ (trials - success)
+      return(probability)
+    }
+bin_probability(5, .5, 2)
+}
+
+#1.5 Function bin_distribution 
+
+bin_distribution <- function(trials, prob)
+  if(bin_probability(trials, prob) == FALSE) {
+    stop("incorrect")
+  }
+  else
+    return(data.frame, c("bindis", "data.frame"))
+}
