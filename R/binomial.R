@@ -93,29 +93,41 @@ stop("k cannot be greater than n")
 #' @return the number of combinations
 #' @export
 
-bin_probability <- function(trials, prob, success){
-    if (check_trials(trials) == FALSE) {
-      stop("invalid trials value")
-    }
-    else if (check_prob(prob) == FALSE) {
-      stop("invalid probability value")
-    }
-    else if (check_success(success, trials) == FALSE) {
-      stop("invalid success value")
-    }
-    else {
-      probability <- bin_choose (trials, success) * (prob ^ success) * (1 - prob) ^ (trials - success)
-      return(probability)
-    }
-bin_probability(5, .5, 2)
+bin_probability <- function(success, trials, prob) {
+  check_trials(trials)
+  check_prob(prob)
+  check_success(success, trials)
+  
+  probability = bin_choose(trials,success) * prob^(success) * (1-prob)^(trials-success)
+  return(probability)
 }
 
 #1.5 Function bin_distribution 
+#' @title  bin_distribution()
+#' @description displays the binomial distribution as data frame
+#' @param trials the number of trials
+#' @param prob the probability of one success
+#' @return the binomial distribution
+#' @export
 
 bin_distribution <- function(trials, prob)
-  if(bin_probability(trials, prob) == FALSE) {
-    stop("incorrect")
+  bin_distribution <- function(trials, prob) {
+    values <- c()
+    success <- (0:trials)
+    for (i in success) {
+      distribution <- bin_probability(i, trials, prob)
+      values <- c(values, distribution)
+    }
+    
+    df <- data.frame(success, "probability" = values)
+    class(df) <- c("bindis", "data.frame")
+    return (df)
   }
-  else
-    return(data.frame, c("bindis", "data.frame"))
+
+#' @export
+plot.bindis <- function(trials, prob){
+  distribution <- bin_distribution(trials, prob)
+  p = plot(distribution, type = "n")+ barplot(height = distribution$probability, xlab = "success", ylab = "probability")
+  return(p)
 }
+
